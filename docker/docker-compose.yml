@@ -1,0 +1,21 @@
+services:
+  assistant:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      OLLAMA_URL: http://host.docker.internal:11434/api/chat
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - ../data:/opt/research-assistant/data
+      - ../instance:/opt/research-assistant/instance
+      - ../evaluation/cache:/opt/research-assistant/evaluation/cache
+      - type: bind
+        source: ${HF_HUB_CACHE:-${USERPROFILE:-${HOME}}/.cache/huggingface/hub}
+        target: /root/.cache/huggingface/hub
+        read_only: true

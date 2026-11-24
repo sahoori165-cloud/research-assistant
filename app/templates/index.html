@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-session-timeout-min="{{ session_timeout }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>مساعد البحث والنشر الذكي — جامعة نايف العربية للعلوم الأمنية</title>
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function () {
+      var d = document.documentElement;
+      try {
+        var t = localStorage.getItem("ra-theme");
+        if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+        if (localStorage.getItem("ra-lang") === "en") { d.lang = "en"; d.dir = "ltr"; }
+        var f = parseInt(localStorage.getItem("ra-font"), 10);
+        if (f >= 14 && f <= 20) d.style.fontSize = f + "px";
+        var s = localStorage.getItem("ra-session");
+        var a = parseInt(localStorage.getItem("ra-last-activity"), 10);
+        var limit = parseFloat(d.getAttribute("data-session-timeout-min")) * 60000;
+        if (!s || !a || Date.now() - a > limit) d.classList.add("auth-required");
+      } catch (e) { d.classList.add("auth-required"); }
+    })();
+  </script>
+  <link rel="preload" href="{{ url_for('static', filename='fonts/cairo-arabic-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ url_for('static', filename='fonts/inter-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/nauss-logo.svg') }}" type="image/svg+xml">
+</head>
+{% set sprite = url_for('static', filename='icons/lucide-sprite.svg') %}
+{% set logo = url_for('static', filename='img/nauss-logo.svg') %}
+<body data-sprite="{{ sprite }}">
+  <a class="skip" href="#main" data-i18n>تخطَّ إلى المحتوى الرئيسي</a>
+
+  <div class="login" id="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <img class="brand-logo" src="{{ logo }}" alt="جامعة نايف العربية للعلوم الأمنية" data-i18n-attr="alt" width="978" height="372">
+      </div>
+      <div class="login-body">
+        <div class="prefs prefs-compact">
+          <div class="seg" role="group" aria-label="اللغة" data-i18n-attr="aria-label">
+            <button type="button" class="seg-btn" data-lang="en" lang="en">EN</button><span class="seg-sep" aria-hidden="true">|</span><button type="button" class="seg-btn" data-lang="ar" lang="ar">ع</button>
+          </div>
+          <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle aria-label="تبديل المظهر">
+            <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-moon"></use></svg>
+          </button>
+        </div>
+        <h1 class="login-title" data-i18n>تسجيل الدخول</h1>
+        <p class="lede" data-i18n>مساعد البحث والنشر الذكي</p>
+        <div class="alert alert-info" id="login-notice" role="status" hidden>
+          <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-info"></use></svg><p data-notice-text></p>
+        </div>
+        <form id="login-form" class="login-form" novalidate>
+          <div class="field">
+            <label for="login-user" data-i18n>اسم المستخدم</label>
+            <input class="input" id="login-user" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" dir="auto" required>
+          </div>
+          <div class="field">
+            <label for="login-pass" data-i18n>كلمة المرور</label>
+            <input class="input" id="login-pass" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <p class="form-msg is-error" id="login-error" role="alert"></p>
+          <button class="btn btn-primary" type="submit">
+            <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-log-in"></use></svg><span data-i18n>دخول</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="التنقل الرئيسي" data-i18n-attr="aria-label">
+      <button class="btn btn-ghost btn-icon drawer-close" type="button" id="drawer-close" aria-label="إغلاق القائمة" data-i18n-attr="aria-label">
+        <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-x"></use></svg>
+      </button>
+      <div class="brand">
+        <img class="brand-logo" src="{{ logo }}" alt="جامعة نايف العربية للعلوم الأمنية" data-i18n-attr="alt" width="978" height="372">
+        <p class="brand-app" data-i18n>مساعد البحث والنشر الذكي</p>
+      </div>
+
+      <nav class="nav" aria-label="الأقسام" data-i18n-attr="aria-label">
+        <ul>
+          {% for route, icon, label in [
+            ('dashboard', 'layout-dashboard', 'لوحة التحكم'),
+            ('search', 'sparkles', 'البحث الذكي'),
+            ('papers', 'file-text', 'الأوراق البحثية'),
+            ('themes', 'layers', 'المحاور البحثية'),
+            ('trends', 'trending-up', 'الاتجاهات'),
+            ('integrity', 'shield-check', 'النزاهة العلمية'),
+            ('export', 'download', 'التصدير')
+          ] %}
+          <li>
+            <a href="#/{{ route }}" data-route="{{ route }}">
+              <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-{{ icon }}"></use></svg>
+              <span data-i18n>{{ label }}</span>
+              <span class="nav-badge num" data-badge="{{ route }}" hidden></span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+    </aside>
+    <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+    <div class="main-col">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon menu-btn" type="button" id="menu-btn" aria-label="فتح القائمة" data-i18n-attr="aria-label" aria-controls="sidebar" aria-expanded="false">
+          <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-menu"></use></svg>
+        </button>
+        <div class="topbar-titles">
+          <nav class="crumbs" aria-label="مسار التنقل" data-i18n-attr="aria-label"><ol id="crumbs"></ol></nav>
+          <h1 class="page-title" id="page-title">لوحة التحكم</h1>
+        </div>
+        <a class="job-chip" id="job-chip" href="#/search" hidden aria-live="polite"></a>
+
+        <div class="prefs topbar-prefs" role="group" aria-label="تفضيلات العرض" data-i18n-attr="aria-label">
+          <div class="seg" role="group" aria-label="اللغة" data-i18n-attr="aria-label">
+            <button type="button" class="seg-btn" data-lang="en" lang="en">EN</button><span class="seg-sep" aria-hidden="true">|</span><button type="button" class="seg-btn" data-lang="ar" lang="ar">ع</button>
+          </div>
+          <div class="seg" role="group" aria-label="حجم الخط" data-i18n-attr="aria-label">
+            <button type="button" class="seg-btn" data-font="dec" aria-label="تصغير الخط" data-i18n-attr="aria-label"><span aria-hidden="true" dir="ltr">A−</span></button>
+            <button type="button" class="seg-btn" data-font="inc" aria-label="تكبير الخط" data-i18n-attr="aria-label"><span aria-hidden="true" dir="ltr">A+</span></button>
+          </div>
+          <button class="btn btn-ghost btn-icon" type="button" id="theme-btn" data-theme-toggle aria-label="تبديل المظهر">
+            <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-moon"></use></svg>
+          </button>
+        </div>
+
+        <div class="account">
+          <button class="btn btn-ghost account-btn" type="button" id="account-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="account-panel">
+            <span class="avatar" id="account-initial" aria-hidden="true"></span>
+            <span class="account-name" id="account-name"></span>
+          </button>
+          <div class="account-panel" id="account-panel" role="dialog" aria-labelledby="account-title" hidden></div>
+        </div>
+      </header>
+
+      <main class="main" id="main" tabindex="-1">
+
+        <section class="view" data-view="dashboard" aria-labelledby="page-title">
+          <div class="hero">
+            <p class="eyebrow">
+              <svg class="icon icon-sm" aria-hidden="true"><use href="{{ sprite }}#i-sparkles"></use></svg>
+              <span data-i18n>مراجعة أدبية مُسندة بالمصادر</span>
+            </p>
+            <h2 data-i18n>ابدأ مراجعة أدبية جديدة</h2>
+            <p class="lede" data-i18n>اكتب سؤالك البحثي، وسيبحث المساعد في <span class="ltr en">OpenAlex</span> ويرتّب ما يصل إلى <span class="num">50</span> ورقة، ويتحقق من سلامة معرّفات <span class="ltr en">DOI</span>، ثم يجمعها في محاور مع ملخصات مُسندة.</p>
+            <form class="ask" data-ask-form novalidate>
+              <div class="ask-row">
+                <div class="field">
+                  <label for="q-dash" data-i18n>السؤال البحثي</label>
+                  <input class="input" id="q-dash" name="question" dir="auto" required autocomplete="off"
+                         placeholder="How does federated learning protect medical data?">
+                </div>
+                <button class="btn btn-primary" type="submit">
+                  <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-search"></use></svg>
+                  <span data-i18n>ابدأ البحث</span>
+                </button>
+              </div>
+              <p class="hint" data-i18n>يُفضَّل كتابة السؤال بالإنجليزية لأن فهرسة <span class="ltr en">OpenAlex</span> إنجليزية في معظمها.</p>
+              <p class="form-msg" role="alert" data-form-msg></p>
+            </form>
+          </div>
+
+          <div id="dash-results"></div>
+
+          <div class="card card-lg">
+            <div class="card-head">
+              <h2 class="section-title" data-i18n>كيف يعمل خط المعالجة</h2>
+              <span class="muted" data-i18n>سبع مراحل بترتيب ثابت</span>
+            </div>
+            <ol class="pipeline">
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-search"></use></svg></span><h4 data-i18n>الاسترجاع</h4><p data-i18n>جمع الأوراق المرشّحة من <span class="ltr en">OpenAlex</span>.</p></li>
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-copy-x"></use></svg></span><h4 data-i18n>إزالة التكرار</h4><p data-i18n>دمج السجلات المكرّرة والنسخ الأولية للورقة نفسها.</p></li>
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-arrow-up-down"></use></svg></span><h4 data-i18n>إعادة الترتيب</h4><p data-i18n>ترتيب دلالي حسب الصلة بالسؤال، ثم اختيار الأعلى.</p></li>
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-shield-check"></use></svg></span><h4 data-i18n>التحقق</h4><p data-i18n>فحص <span class="ltr en">DOI</span> عبر <span class="ltr en">Crossref</span> و<span class="ltr en">Retraction Watch</span>.</p></li>
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-layers"></use></svg></span><h4 data-i18n>التجميع والاتجاهات</h4><p data-i18n>تقسيم الأوراق إلى 4–8 محاور وحساب توزيعها على عشر سنوات.</p></li>
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-book-open"></use></svg></span><h4 data-i18n>التلخيص</h4><p data-i18n>ملخص لكل محور مبني على الملخصات المتحقق منها فقط.</p></li>
+              <li><span class="step-icon"><svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-layout-dashboard"></use></svg></span><h4 data-i18n>عرض النتائج</h4><p data-i18n>استعراض الأوراق والمحاور وتصديرها بصيغة <span class="ltr en">BibTeX</span> و<span class="ltr en">CSL-JSON</span>.</p></li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="view" data-view="search" aria-labelledby="page-title" hidden>
+          <div class="card card-lg">
+            <form class="ask" data-ask-form novalidate style="margin-top:0">
+              <div class="ask-row">
+                <div class="field">
+                  <label for="q-search" data-i18n>السؤال البحثي</label>
+                  <input class="input" id="q-search" name="question" dir="auto" required autocomplete="off"
+                         placeholder="How does federated learning protect medical data?">
+                </div>
+                <button class="btn btn-primary" type="submit">
+                  <svg class="icon" aria-hidden="true"><use href="{{ sprite }}#i-search"></use></svg>
+                  <span data-i18n>ابدأ البحث</span>
+                </button>
+              </div>
+              <p class="form-msg" role="alert" data-form-msg></p>
+            </form>
+          </div>
+          <div id="search-status" aria-live="polite"></div>
+        </section>
+
+        <section class="view" data-view="papers" aria-labelledby="page-title" hidden>
+          <div class="card" id="papers-toolbar" hidden>
+            <div class="toolbar">
+              <div class="field search-field">
+                <label for="p-q" data-i18n>بحث في النتائج</label>
+                <div class="search-wrap">
+                  <svg class="icon icon-sm" aria-hidden="true"><use href="{{ sprite }}#i-search"></use></svg>
+                  <input class="input" id="p-q" type="search" dir="auto" placeholder="العنوان، المؤلف، المجلة، DOI…" data-i18n-attr="placeholder">
+                </div>
+              </div>
+              <div class="field">
+                <label for="p-status" data-i18n>حالة النزاهة</label>
+                <select class="select" id="p-status"></select>
+              </div>
+              <div class="field">
+                <label for="p-theme" data-i18n>المحور</label>
+                <select class="select" id="p-theme"></select>
+              </div>
+              <div class="field">
+                <label for="p-sort" data-i18n>الترتيب</label>
+                <select class="select" id="p-sort">
+                  <option value="rank" data-i18n>ترتيب الصلة (الافتراضي)</option>
+                  <option value="year-desc" data-i18n>الأحدث أولًا</option>
+                  <option value="year-asc" data-i18n>الأقدم أولًا</option>
+                  <option value="cites-desc" data-i18n>الأكثر استشهادًا</option>
+                  <option value="title" data-i18n>العنوان (أ–ي / A–Z)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="papers-region"></div>
+        </section>
+
+        <section class="view" data-view="themes" aria-labelledby="page-title" hidden>
+          <div id="themes-region"></div>
+        </section>
+
+        <section class="view" data-view="trends" aria-labelledby="page-title" hidden>
+          <div id="trends-region"></div>
+        </section>
+
+        <section class="view" data-view="integrity" aria-labelledby="page-title" hidden>
+          <div id="integrity-region"></div>
+        </section>
+
+        <section class="view" data-view="export" aria-labelledby="page-title" hidden>
+          <div id="export-region"></div>
+        </section>
+      </main>
+
+      <footer class="main-foot">
+        <p><span data-i18n>المصادر:</span> <span class="ltr en">OpenAlex · Crossref · Retraction Watch</span></p>
+        <p data-i18n>تُعرض النتائج كما أعادها خط المعالجة دون تعديل.</p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="timeout-modal" hidden>
+    <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="timeout-title" aria-describedby="timeout-desc">
+      <span class="empty-icon"><svg class="icon icon-lg" aria-hidden="true"><use href="{{ sprite }}#i-clock"></use></svg></span>
+      <h2 id="timeout-title" data-i18n>هل ما زلت هنا؟</h2>
+      <p id="timeout-desc"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" id="stay-btn"><span data-i18n>البقاء متصلًا</span></button>
+        <button class="btn btn-secondary" type="button" id="logout-now"><span data-i18n>تسجيل الخروج</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/lang/en.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/i18n.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/prefs.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>
