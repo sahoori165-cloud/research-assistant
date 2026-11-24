@@ -1,0 +1,24 @@
+{
+  "users": {
+    "ohoud": {
+      "password_hash": "scrypt:32768:8:1$FbA4QM14CB3STLd8$11803105d45ab81ffab342a9b2ab50d0a0d5ff73018e5abbecdfa5482a3944377ca15fe61266103a68db5bec0fa65faa8055fd384a44833c5c169533a744a72b",
+      "role": "Researcher",
+      "username": "ohoud"
+    },
+    "razan": {
+      "password_hash": "scrypt:32768:8:1$I63NbyvmnKe46xxO$46c87905f60b986e63a9f32cd0df5abf26b08b0213e78fadd20a126938a796453e9317182adbe992ca3b755d308cf334b746f54ee93ba0458876f5682b7b9100",
+      "role": "Researcher",
+      "username": "razan"
+    },
+    "sahar": {
+      "password_hash": "scrypt:32768:8:1$jDw9789FdbLAp6B5$fb159535578883bdf1b7933e6ecfbc4628bdc92b0203ca1f8400a13796f08f3b9d36c09f7e085b372224da5f0fb9b6b566f8ab2f456b1b0f54bc0f8b54a9a100",
+      "role": "Researcher",
+      "username": "sahar"
+    },
+    "shouq": {
+      "password_hash": "scrypt:32768:8:1$6LJRop2y6lMWkNc3$791f0ec1c90a31a987d40f27b17e164d260d0eb61d2e041614aa8ec1ed9e42aa61c9503dc2bdf21a4cefa0e46bc97af118439ef615cb204d6ceebca71aabf91c",
+      "role": "Researcher",
+      "username": "shouq"
+    }
+  }
+}
